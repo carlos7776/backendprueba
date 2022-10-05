@@ -13,47 +13,46 @@ User.getAll = () =>{
     `;
     return db.manyOrNone(sql);
 }
-User.findByEmail = (email) => {
+
+User.findByEmail = (email) =>{
     const sql = `
     SELECT
         id,
         email,
-        NAME,
+        name,
         lastname,
         image,
         phone,
-        PASSWORD,
+        password,
         session_token
-	
-FROM
-	users
-WHERE
-	email = $1
+    FROM
+        users
+    where
+        email= $1
     `;
-
+    
     return db.oneOrNone(sql, email);
-
 }
 
-User.findById = (id, callback) => {
+User.findById = (id, callback) =>{
+
     const sql = `
     SELECT
         id,
         email,
-        NAME,
+        name,
         lastname,
         image,
         phone,
-        PASSWORD,
+        password,
         session_token
-	
-FROM
-	users
-WHERE
-	id = $1
+    FROM
+        users
+    where
+        id= $1
     `;
-
-    return db.oneOrNone(sql, id).then(user => { callback(null), user})
+    
+    return db.oneOrNone(sql, id).then(user => { callback(null, user)})
 }
 
 User.create = async (user) => {

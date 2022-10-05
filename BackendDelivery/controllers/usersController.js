@@ -1,8 +1,11 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
-//const passport = require('../config/passport');
+//const passport = require('passport')
 const jwt = require('jsonwebtoken');
-const keys = require('../config/keys')
+const keys = require('../config/keys');
+const passport = require('../config/passport');
+
+
  
 module.exports = {
    
@@ -49,50 +52,50 @@ module.exports = {
     async login(req, res, next){
 
         try {
-            
+
             const email = req.body.email;
             const password = req.body.password;
 
             const myUser = await User.findByEmail(email);
 
-            if(!myUser) {
+            if(!myUser){
                 return res.status(401).json({
-                    success:false,
-                    message:'El email no fue encontrado'
-                })
+                    success: false,
+                    message: 'el email no fue encontrado'
+                }) 
             }
             
-            const isPasswordValid = await bcrypt.compare(password, myUser.passport);
+            const isPasswordValid = await bcrypt.compare(password, myUser.password);
 
             if(isPasswordValid){
-                const token = jwt.sing({id: myUser.id,email: myUser.email}, keys.secretOrKey,{
+               const token = jwt.sign({ id: myUser.id,email: myUser.email }, keys.secretOrkey, {
                     //expiresIn:
                 })
+            
 
                 const data = {
-                    id: myUser.id,
-                    name: myUser.name,
-                    lastname: myUser.lastname,
-                    email: myUser.email,
-                    phone: myUser.phone,
-                    image: myUser.image,
+                    id:myUser.id,
+                    name:myUser.name,
+                    lastname:myUser.lastname,
+                    email:myUser.email,
+                    phone:myUser.phone,
+                    image:myUser.image,
                     session_token: `JWT ${token}`
                 };
-
                 return res.status(201).json({
                     success: true,
-                    message: 'El usuario ha sido autentificado',
+                    message: 'el usuario ha sido autentificado',
                     data: data
                 });
             }
             else{
                 return res.status(401).json({
                     success: false,
-                    message: 'La contraseña es incorrecta',
-                    data: data
+                    message: 'la contraseña es incorrecta',
+                    
                 });
+                
             }
-            
         } 
         catch (error) {
             console.log(`Error: ${error}`);
@@ -103,7 +106,6 @@ module.exports = {
                 
             });
         }
-
     }
 
 
